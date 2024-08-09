@@ -1,0 +1,26 @@
+from datetime import datetime
+from typing import Annotated
+
+from sqlalchemy import VARCHAR, TIMESTAMP
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    declared_attr,
+    mapped_column,
+)
+from sqlalchemy.sql.functions import now
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class TableNameMixin:
+    @declared_attr.directive
+    def __tablename__(cls) -> str:
+        return cls.__name__.lower() + 's'
+
+
+int_pk = Annotated[int, mapped_column(primary_key=True)]
+str_128 = Annotated[str, mapped_column(VARCHAR(128))]
+str_255 = Annotated[str, mapped_column(VARCHAR(255))]
+timestamp_now = Annotated[datetime, mapped_column(TIMESTAMP, server_default=now())]
