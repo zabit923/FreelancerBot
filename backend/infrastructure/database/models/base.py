@@ -23,4 +23,5 @@ class TableNameMixin:
 int_pk = Annotated[int, mapped_column(primary_key=True)]
 str_128 = Annotated[str, mapped_column(VARCHAR(128))]
 str_255 = Annotated[str, mapped_column(VARCHAR(255))]
+str_500 = Annotated[str, mapped_column(VARCHAR(500))]
 timestamp_now = Annotated[datetime, mapped_column(TIMESTAMP, server_default=now())]
