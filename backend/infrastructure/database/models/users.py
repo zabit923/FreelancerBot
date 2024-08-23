@@ -4,7 +4,6 @@ from decimal import Decimal
 from typing import Optional
 from sqlalchemy import (
     VARCHAR,
-    BIGINT,
     false,
     true,
     TIMESTAMP,
@@ -16,15 +15,18 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import (
     Base,
     TableNameMixin,
+    str_20,
     str_128,
     str_255,
     str_500,
+    int_pk,
     timestamp_now,
 )
+from .orders import MarketArea
 
 
 class User(Base, TableNameMixin):
-    user_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=False)
+    user_id: Mapped[int_pk]
     full_name: Mapped[str_128]
     username: Mapped[Optional[str]] = mapped_column(VARCHAR(64))
     email: Mapped[Optional[str_255]] = mapped_column(unique=True)
@@ -69,7 +71,7 @@ class FreelancerProfession(enum.Enum):
 
 
 class FreelancerProfile(Base, TableNameMixin):
-    profile_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
+    profile_id: Mapped[int_pk]
     user_id: Mapped[int] = mapped_column(ForeignKey(User.user_id))
     portfolio_link: Mapped[str_255]
     profession: Mapped[FreelancerProfession]
@@ -77,4 +79,11 @@ class FreelancerProfile(Base, TableNameMixin):
     hourly_rate: Mapped[Optional[Decimal]] = mapped_column(DECIMAL(10, 2))
     is_verified: Mapped[bool] = mapped_column(server_default=false())
     is_avaible: Mapped[bool] = mapped_column(server_default=true())
+    is_notifications_enabled: Mapped[bool] = mapped_column(server_default=false())
+    freelancer_market_area: Mapped[MarketArea] = mapped_column(default=MarketArea.GLOBAL)
 
+
+class FreelancerSkill(Base, TableNameMixin):
+    skill_id: Mapped[int_pk]
+    profile_if: Mapped[int] = mapped_column(ForeignKey(FreelancerProfile.profile_id))
+    skill_name: Mapped[str_20]
