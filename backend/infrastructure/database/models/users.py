@@ -85,5 +85,5 @@ class FreelancerProfile(Base, TableNameMixin):
 
 class FreelancerSkill(Base, TableNameMixin):
     skill_id: Mapped[int_pk]
-    profile_if: Mapped[int] = mapped_column(ForeignKey(FreelancerProfile.profile_id))
+    profile_id: Mapped[int] = mapped_column(ForeignKey(FreelancerProfile.profile_id))
     skill_name: Mapped[str_20]

@@ -4,15 +4,16 @@ import datetime
 from sqlalchemy import (
     ForeignKey,
     false,
+    TIMESTAMP,
 )
-from sqlalchemy.orm import Mapped
-from sqlalchemy.testing.schema import mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional
 
 from .base import (
     Base,
     TableNameMixin,
     int_pk,
+    str_20,
     str_255,
     timestamp_now
 )
@@ -44,7 +45,15 @@ class Order(Base, TableNameMixin):
     status: Mapped[OrderStatus] = mapped_column(server_default=OrderStatus.DRAFT.value)
 
     is_promoted: Mapped[bool] = mapped_column(server_default=false())
-    promoted_until: Mapped[Optional[datetime.datetime]] = mapped_column()
+    promoted_until: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP)
 
     created_at: Mapped[timestamp_now]
     updated_at: Mapped[timestamp_now]
+
+
+class OrderCountry(Base):
+    __tablename__ = 'order_countries'
+
+    order_country_id: Mapped[int_pk]
+    order_id: Mapped[int] = mapped_column(ForeignKey(Order.order_id))
+    country_key: Mapped[str_20]
