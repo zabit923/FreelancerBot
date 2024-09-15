@@ -1,6 +1,6 @@
 import enum
-from typing import Optional
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import Optional, List
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import (
     true,
     false,
@@ -69,3 +69,23 @@ class Question(Base, TableNameMixin):
         ForeignKey('questions.question_id')
     )
     condition_option_id: Mapped[Optional[int]]
+    options: Mapped[List['Option']] = relationship(
+        'Option',
+        back_populates='questions',
+        foreign_keys='[Option.question_id]'
+    )
+
+
+class Option(Base, TableNameMixin):
+    option_id: Mapped[int_pk]
+    question_id: Mapped[int] = mapped_column(ForeignKey(Question.question_id))
+    option_key: Mapped[str_50]
+    option_text: Mapped[str]
+    subtitle: Mapped[Optional[str]]
+    icon_url: Mapped[Optional[str]]
+    hint: Mapped[Optional[str]]
+    display_order: Mapped[int]
+
+    question: Mapped['Question'] = relationship(
+        'Question', back_populates='options', foreign_keys=[question_id]
+    )
